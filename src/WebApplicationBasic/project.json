@@ -43,6 +43,9 @@
       }
     },
     "net451": {
+      "dependencies": {
+        "System.ServiceModel": "1.0.0"
+      }
     }
   },
 
