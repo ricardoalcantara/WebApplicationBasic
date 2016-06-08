@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.CodeAnalysis;
 
 namespace src_WebApplicationBasic
 {
@@ -29,19 +29,29 @@ namespace src_WebApplicationBasic
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
-            
-            /*var myAssemblies = new List<string>();
-            services.Configure<RazorViewEngineOptions>(options =>
+            //services.AddMvc();
+            services
+            .AddMvc()
+            .AddRazorOptions( options =>
             {
+                var myAssemblyPaths = new [] {
+                     "/usr/lib/mono/4.5/mscorlib.dll",
+                     "/usr/lib/mono/4.5/System.Core.dll", 
+                     "/usr/lib/mono/4.5/Microsoft.CSharp.dll"
+                    };
                 var previous = options.CompilationCallback;
-                options.CompilationCallback = (context) =>
+                options.CompilationCallback = (context) => 
                 {
-                    previous?.Invoke(context);
-                    var references = myAssemblies.Select(MetadataReference.CreateFromFile).ToArray();
+                    if (previous != null)
+                    {
+                        previous(context);
+                    }
+
+                    var references = myAssemblyPaths.Select(p=>MetadataReference.CreateFromFile(p)).ToArray();
                     context.Compilation = context.Compilation.AddReferences(references);
                 };
-            });*/
+            });                        
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
